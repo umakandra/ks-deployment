@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-flask
+  labels:
+    app: pythonv1
+spec:
+  replicas: 1  # Number of pods to run
+  selector:
+    matchLabels:
+      app: pythonv1
+  template:
+    metadata:
+      labels:
+        app: pythonv1
+    spec:
+      containers:
+      - name: python
+        image: 135808915413.dkr.ecr.us-east-1.amazonaws.com/python:1.0.0  # Replace with your image URL (e.g., from Docker Hub or ECR)
+        ports:
+        - containerPort: 5002  # Exposing port 5000 (Flask default port)
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-flask-service
+spec:
+  selector:
+    app: pythonv1
+  ports:
+    - protocol: TCP
+      port: 5002
+      targetPort: 5002  # Exposing port 5000 from the container to port 80
+  type: LoadBalancer  # Use a LoadBalancer to expose the service externally
